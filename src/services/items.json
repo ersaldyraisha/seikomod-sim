@@ -1,0 +1,52 @@
+{
+  "case": [
+    {
+      "id": "4r36-01e0",
+      "name": "4r36-01e0",
+      "src": "https://ersaldyraisha-portfolio.web.app/seikonator/cases/4r36-01e0.png",
+      "description": "Diameter - 39mm",
+      "compatibility": ["4r36-01e0"],
+      "type": "case",
+      "dialDiameter": 28.5
+    },
+    {
+      "id": "4r36-07w4",
+      "name": "4r36-07w4",
+      "src": "https://ersaldyraisha-portfolio.web.app/seikonator/cases/4r36-07w4.png",
+      "description": "Diameter - 39mm",
+      "compatibility": ["4r36-07w4"],
+      "type": "case",
+      "dialDiameter": 28.5
+    }
+  ],
+  "chapter": [
+    {
+      "id": "srp269",
+      "name": "SRP269",
+      "src": "https://ersaldyraisha-portfolio.web.app/seikonator/chapters/srp269.png",
+      "description": "OD - 39mm | ID - 28.5mm",
+      "compatibility": ["4r36-01e0"],
+      "type": "chapter"
+    },
+    {
+      "id": "srp301",
+      "name": "SRP301",
+      "src": "https://ersaldyraisha-portfolio.web.app/seikonator/chapters/srp301.png",
+      "description": "OD - 39mm | ID - 28.5mm",
+      "compatibility": ["4r36-01e0"],
+      "type": "chapter"
+    },
+    {
+      "id": "srpe55",
+      "name": "SRPE55",
+      "src": "https://ersaldyraisha-portfolio.web.app/seikonator/chapters/srpe55.png",
+      "description": "OD - 36mm | ID - 28.5mm",
+      "compatibility": ["4r36-07w4"],
+      "type": "chapter"
+    }
+  ],
+  "dial": [],
+  "bezel": [],
+  "insert": [],
+  "strap": []
+}
