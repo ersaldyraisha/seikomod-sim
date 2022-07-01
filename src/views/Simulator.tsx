@@ -5,18 +5,9 @@ import { getItems, getCategories, CategoryId, Item } from '../services'
 
 const categoryIds : Array<CategoryId> = ['case' , 'dial' , 'bezel' , 'insert' , 'chapter' , 'strap', 'hands']
 
-function Simulator() {
-  return (
-    <div className="flex flex-col h-[100vh] justify-between items-center">
-      <TitleBar/>
-      <Result />
-      <Picker />
-      <Navbar />
-    </div>  
-  )
-}
-
+// store
 type SimulatorState = {
+  isDarkMode: boolean
   activeCategoryId: CategoryId | ''
   activeItems: {
     case?: Item,
@@ -30,11 +21,14 @@ type SimulatorState = {
   setActiveCategory: (payload: CategoryId | '') => void
   setActiveItem: (payload: Item) => void
   filterUncompatibleItems: () => void
+  toggleDarkMode: () => void
 }
 
 const useSimulator = createStore<SimulatorState>((set) => ({
+  isDarkMode: false,
   activeCategoryId: '',
   activeItems: {},
+  toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
   setActiveCategory: (payload) => set(() => ({ activeCategoryId: payload })),
   setActiveItem: (payload) => set((state) => {
     if (payload?.type) {
@@ -60,8 +54,26 @@ const useSimulator = createStore<SimulatorState>((set) => ({
   }),
 }))
 
+// components
+function Simulator() {
+  const isDarkMode = useSimulator(state => state.isDarkMode)
+  
+  return (
+    <div className={classNames(
+      'flex flex-col h-[100vh] justify-between items-center',
+      {'bg-zinc-800 !text-zinc-200': isDarkMode}
+    )}>
+      <TitleBar/>
+      <Result />
+      <Picker />
+      <Navbar />
+    </div>  
+  )
+}
+
 function Navbar() {
   const navItems = getCategories()
+  const isDarkMode = useSimulator(state => state.isDarkMode)
   const activeNavId = useSimulator(state => state.activeCategoryId)
   const setActiveNav = useSimulator(state => state.setActiveCategory)
   
@@ -72,6 +84,7 @@ function Navbar() {
           classNames(
             'px-3 py-1 rounded-full text-black font-bold cursor-pointer',
             { 'bg-blue-600 !text-white': activeNavId === nav.id },
+            { '!text-zinc-200': isDarkMode}
           )
         }
         onClick={() => {
@@ -86,7 +99,10 @@ function Navbar() {
   
   return(
     <nav className="pb-10 pt-7">
-      <ul className="flex justify-center bg-gray-100 gap-[20px] rounded-full p-2">
+      <ul className={classNames(
+        'flex justify-center bg-zinc-200 gap-[20px] rounded-full p-2',
+        { '!bg-zinc-900': isDarkMode }
+      )}>
         {renderedNavItems}
       </ul>
     </nav>
@@ -97,6 +113,7 @@ function Picker() {
   const [page, setPage] = useState(1)
   const [items, setItems] = useState<Array<Item>>([])
   
+  const isDarkMode = useSimulator(state => state.isDarkMode)
   const activeCategoryId = useSimulator(state => state.activeCategoryId)
   const activeItems = useSimulator(state => state.activeItems)
   const setActiveItem = useSimulator(state => state.setActiveItem)
@@ -138,9 +155,12 @@ function Picker() {
   const isNextActive = page < (items?.length ?? 0) / 7
 
   return activeCategoryId ? (
-    <div className="flex justify-center items-center gap-3 relative pt-4 min-h-[242px] border-t w-full">
+    <div className={classNames(
+      'flex justify-center items-center gap-3 relative pt-4 min-h-[242px] border-t border-t-zinc-200 w-full',
+      { '!border-t-zinc-700': isDarkMode }
+    )}>
       <button
-        className="px-[20px] text-7xl text-gray-400 font-light disabled:opacity-20"
+        className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
         disabled={!isPrevActive}
         onClick={() => { if(isPrevActive) setPage(page - 1)}}
         >
@@ -156,7 +176,7 @@ function Picker() {
       </ul>
 
       <button
-        className="px-[20px] text-7xl text-gray-400 font-light disabled:opacity-20"
+        className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
         disabled={!isNextActive}
         onClick={() => { if(isNextActive) setPage(page + 1) }}
       >
@@ -184,11 +204,15 @@ function Result() {
 }
 
 function TitleBar() {
-  const [isDarkModeActive, setDarkMode] = useState(false)
+  const isDarkMode = useSimulator(state => state.isDarkMode)
+  const toggleDarkMode = useSimulator(state => state.toggleDarkMode)
 
   return (
-    <div className="flex fixed justify-between p-5 pb-0 w-[1200px]">
-      <h1 className="text-blue-600 self-start">
+    <div className="flex fixed justify-between pt-8 w-[1200px]">
+      <h1 className={classNames(
+        'self-start font-title text-blue-600',
+        { '!text-zinc-200': isDarkMode }
+      )}>
         <span className='block text-xl leading-none'>
           The
         </span> 
@@ -196,12 +220,15 @@ function TitleBar() {
           SEIKONATOR
         </span> 
       </h1>
-      <button onClick={() => setDarkMode(!isDarkModeActive)}>
+      <button onClick={() => toggleDarkMode()}>
         <div className={classNames(
-          'flex bg-gray-300 p-1 rounded-full w-[35px]',
-          {'!bg-blue-600 justify-end': !isDarkModeActive},
+          'flex bg-zinc-200 p-1 rounded-full w-[35px]',
+          {'!bg-blue-600 justify-end': !isDarkMode},
         )}>
-          <div className="w-3 h-3 bg-white rounded-full" />
+          <div className={classNames(
+            'w-3 h-3 bg-white rounded-full',
+            {'!bg-black': isDarkMode}
+          )} />
         </div>
       </button>
     </div>
