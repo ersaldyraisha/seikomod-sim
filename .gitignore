@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.firebaserc.
+.firebase/
+*.pid
+*.seed
+*.pid.lock
