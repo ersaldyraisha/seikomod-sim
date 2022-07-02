@@ -40,11 +40,29 @@ type Items = {
 const items : Items = {
   case: [
     {
-      id: '4r36-01e0',
-      name: '4R36-01E0',
-      src: 'https://seikonator.web.app/assets/cases/4r36-01e0.png',
-      description: 'Model - SRP2xx/30x',
-      compatibility: ['4r36-01e0'],
+      id: '7s26-002r',
+      name: '7S26-002R',
+      src: 'https://seikonator.web.app/assets/cases/7s26-002r.png',
+      description: 'Model - SKX007',
+      compatibility: ['7s26-002r'],
+      type: 'case',
+      dialDiameter: 28.5
+    },
+    {
+      id: '4r36-07e4',
+      name: '4R36-07E4',
+      src: 'https://seikonator.web.app/assets/cases/4r36-07e4.png',
+      description: 'Model - SRPD',
+      compatibility: ['4r36-07e4'],
+      type: 'case',
+      dialDiameter: 28.5
+    },
+    {
+      id: '4r36-04y0',
+      name: '4R36-04Y0',
+      src: 'https://seikonator.web.app/assets/cases/4r36-04y0.png',
+      description: 'Model - SRP7xx',
+      compatibility: ['4r36-04y0'],
       type: 'case',
       dialDiameter: 28.5
     },
@@ -58,16 +76,34 @@ const items : Items = {
       dialDiameter: 28.5
     },
     {
-      id: '7s26-002r',
-      name: '7S26-002R',
-      src: 'https://seikonator.web.app/assets/cases/7s26-002r.png',
-      description: 'Model - SKX007',
-      compatibility: ['7s26-002r'],
+      id: '7s26-02j0',
+      name: '7S26-02J0',
+      src: 'https://seikonator.web.app/assets/cases/7s26-02j0.png',
+      description: 'Model - SNK78x/80x',
+      compatibility: ['7s26-02j0'],
       type: 'case',
       dialDiameter: 28.5
-    }
+    },
+    {
+      id: '4r36-01e0',
+      name: '4R36-01E0',
+      src: 'https://seikonator.web.app/assets/cases/4r36-01e0.png',
+      description: 'Model - SRP2xx/30x',
+      compatibility: ['4r36-01e0'],
+      type: 'case',
+      dialDiameter: 28.5
+    },
   ],
   dial: [
+    {
+      id: 'skx007',
+      name: 'SKX007',
+      src: 'https://seikonator.web.app/assets/dials/skx007.png',
+      description: 'Diameter - 28.5mm',
+      compatibility: [],
+      type: 'dial',
+      dialDiameter: 28.5
+    },
     {
       id: 'srpe55',
       name: 'SRPE55',
@@ -78,9 +114,27 @@ const items : Items = {
       dialDiameter: 28.5
     },
     {
-      id: 'skx007',
-      name: 'SKX007',
-      src: 'https://seikonator.web.app/assets/dials/skx007.png',
+      id: 'srpd55',
+      name: 'SRPD55',
+      src: 'https://seikonator.web.app/assets/dials/srpd55.png',
+      description: 'Diameter - 28.5mm',
+      compatibility: [],
+      type: 'dial',
+      dialDiameter: 28.5
+    },
+    {
+      id: 'srp777',
+      name: 'SRP777',
+      src: 'https://seikonator.web.app/assets/dials/srp777.png',
+      description: 'Diameter - 28.5mm',
+      compatibility: [],
+      type: 'dial',
+      dialDiameter: 28.5
+    },
+    {
+      id: 'snk809',
+      name: 'SNK809',
+      src: 'https://seikonator.web.app/assets/dials/snk809.png',
       description: 'Diameter - 28.5mm',
       compatibility: [],
       type: 'dial',
@@ -99,13 +153,22 @@ const items : Items = {
     },
     {
       id: 'skx007',
-      name: 'SKX007',
-      src: 'https://seikonator.web.app/assets/hands/skx007.png',
+      name: 'SKX/SRPD/SRP7xx',
+      src: 'https://seikonator.web.app/assets/hands/srp777.png',
       description: 'Suitable dial - 28.5mm',
       compatibility: [],
       type: 'hands',
       dialDiameter: 28.5
-    }
+    },
+    {
+      id: 'snk809',
+      name: 'SNK809',
+      src: 'https://seikonator.web.app/assets/hands/snk809.png',
+      description: 'Suitable dial - 28.5mm',
+      compatibility: [],
+      type: 'hands',
+      dialDiameter: 28.5
+    },
   ],
   bezel: [],
   insert: [
@@ -114,11 +177,51 @@ const items : Items = {
       name: 'SKX007',
       src: 'https://seikonator.web.app/assets/inserts/skx007.png',
       description: 'Model - SKX007',
-      compatibility: ['7s26-002r'],
+      compatibility: ['7s26-002r', '4r36-07e4'],
+      type: 'insert',
+    },
+    {
+      id: 'srpd55',
+      name: 'SRPD55',
+      src: 'https://seikonator.web.app/assets/inserts/srpd55.png',
+      description: 'Model - SKX007',
+      compatibility: ['7s26-002r', '4r36-07e4'],
+      type: 'insert',
+    },
+    {
+      id: 'srp777',
+      name: 'SRP777',
+      src: 'https://seikonator.web.app/assets/inserts/srp777.png',
+      description: 'Model - SRP777',
+      compatibility: ['4r36-04y0'],
       type: 'insert',
     }
   ],
   chapter: [
+    {
+      id: 'skx007',
+      name: 'SKX007',
+      src: 'https://seikonator.web.app/assets/chapters/skx007.png',
+      description: 'Model - SKX007/SRPD',
+      compatibility: ['7s26-002r', '4r36-07e4'],
+      type: 'chapter'
+    },
+    {
+      id: 'srpe55',
+      name: 'SRPE55',
+      src: 'https://seikonator.web.app/assets/chapters/srpe55.png',
+      description: 'Model - SRPE55',
+      compatibility: ['4r36-07w4'],
+      type: 'chapter'
+    },
+    {
+      id: 'srp777',
+      name: 'SRP777',
+      src: 'https://seikonator.web.app/assets/chapters/srp777.png',
+      description: 'Model - SRP777',
+      compatibility: ['4r36-04y0'],
+      type: 'chapter'
+    },
     {
       id: 'srp269',
       name: 'SRP269',
@@ -135,22 +238,6 @@ const items : Items = {
       compatibility: ['4r36-01e0'],
       type: 'chapter'
     },
-    {
-      id: 'srpe55',
-      name: 'SRPE55',
-      src: 'https://seikonator.web.app/assets/chapters/srpe55.png',
-      description: 'Model - SRPE55',
-      compatibility: ['4r36-07w4'],
-      type: 'chapter'
-    },
-    {
-      id: 'skx007',
-      name: 'SKX007',
-      src: 'https://seikonator.web.app/assets/chapters/skx007.png',
-      description: 'Model - SKX007',
-      compatibility: ['7s26-002r'],
-      type: 'chapter'
-    }
   ],
   strap: []
 }

@@ -1,14 +1,14 @@
 {
   "name": "seikonator",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && cp ./raw-assets/parts/* ./dist/assets -r",
+    "deploy": "pnpm run build && firebase deploy",
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "classnames": "^2.3.1",
     "framer-motion": "^6.3.16",
     "react": "^18.0.0",

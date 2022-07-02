@@ -1,6 +1,11 @@
+// TODO: make responsive
+// TODO: use API for data call?
+
 import classNames from 'classnames'
 import resetIcon from '../../../assets/images/icon-reset.png'
 import infoIcon from '../../../assets/images/icon-info.png'
+import resultPlaceholderDark from '../../../assets/images/placeholder-white.png'
+import resultPlaceholderLight from '../../../assets/images/placeholder-gray.png'
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { getItems, getCategories, categoryIds, Item } from '../utils'
@@ -254,6 +259,7 @@ function Items() {
 function Result() {
   const activeItems = useSimulator(state => state.activeItems)
   const activeCategoryId = useSimulator(state => state.activeCategoryId)
+  const isDarkMode = useSimulator(state => state.isDarkMode)
 
   const renderedResult = categoryIds.map(id => activeItems[id] ? (
     <motion.img
@@ -279,8 +285,20 @@ function Result() {
       }}
     >
       <div className="relative w-[450px] h-[450px]">
-        {activeItems.case
-          && <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-gray-500 rounded-full" />}
+        {activeItems.case && (
+          <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-gray-500 rounded-full" />
+        )}
+        {!activeItems.case && (
+          <>
+            <img className="absolute inset w-full" src={isDarkMode ? resultPlaceholderDark : resultPlaceholderLight } alt="start-customizing" />
+            <p className={classNames(
+              'absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] text-center font-bold text-gray-400',
+              {'!text-white': isDarkMode}
+            )}>
+              Select a case<br/>and start customizing.
+            </p>
+          </>
+        )}
         <AnimatePresence>
           {renderedResult}
         </AnimatePresence>
