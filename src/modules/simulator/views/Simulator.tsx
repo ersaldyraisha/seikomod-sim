@@ -24,6 +24,7 @@ function Navbar() {
   const navItems = getCategories()
   const isDarkMode = useSimulator(state => state.isDarkMode)
   const activeNavId = useSimulator(state => state.activeCategoryId)
+  const activeItems = useSimulator(state => state.activeItems)
   const setActiveNav = useSimulator(state => state.setActiveCategory)
   
   const renderedNavItems = navItems.map(nav => (
@@ -31,7 +32,8 @@ function Navbar() {
       <button
         className={
           classNames(
-            'px-3 py-1 rounded-full text-black font-bold cursor-pointer',
+            'relative px-3 py-1 rounded-full text-black font-bold cursor-pointer',
+            { 'outline:animate-ping': true},
             { 'bg-blue-600 !text-white': activeNavId === nav.id },
             { '!text-zinc-200': isDarkMode}
           )
@@ -42,6 +44,12 @@ function Navbar() {
         }}
       >
         {nav.name}
+        {nav.id === 'case' && !activeItems.case && activeNavId !== 'case' && (
+          <div className="absolute top-0 left-0 w-full h-full rounded-full bg-blue-600 opacity-50 animate-ping" />
+        )}
+        {activeItems[nav.id] && (
+          <div className="absolute top-0 right-[-2px] w-[8px] h-[8px] rounded-full bg-red-600" />
+        )}
       </button>
     </li>
   ))
@@ -169,21 +177,19 @@ function Result() {
   const renderedResult = categoryIds.map(id => activeItems[id] ? (
     <img key={`result-${id}`} className='absolute inset w-full' src={activeItems[id]?.src} alt="result" />
   ) : null)
-
-  const animationVariants = {
-    open: { opacity: 1, y: 100 },
-    closed: { opacity: 1, y: 200 },
-  }
-
+  
   return (
     <motion.div
-      animate={!!activeCategoryId ? "open" : "closed"}
-      variants={animationVariants}
       className="flex items-center"
+      animate={!!activeCategoryId ? 'open' : 'closed'}
+      variants={{
+        open: { opacity: 1, y: 100 },
+        closed: { opacity: 1, y: 200 },
+      }}
     >
       <div className="relative w-[450px] h-[450px]">
         {activeItems.case
-          && <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-black rounded-full" />}
+          && <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-gray-500 rounded-full" />}
         {renderedResult}
       </div>
     </motion.div>
@@ -210,12 +216,19 @@ function TitleBar() {
       <button onClick={() => toggleDarkMode()}>
         <div className={classNames(
           'flex bg-zinc-200 p-1 rounded-full w-[45px]',
-          {'!bg-blue-600 justify-end': !isDarkMode},
+          {'!bg-blue-600': !isDarkMode},
         )}>
-          <div className={classNames(
-            'w-4 h-4 bg-white rounded-full',
-            {'!bg-black': isDarkMode}
-          )} />
+          <motion.div
+            animate={isDarkMode ? 'off' : 'on'}
+            variants={{
+              on: { x: 20 },
+              off: { x: 0 }
+            }}
+            className={classNames(
+              'w-4 h-4 bg-white rounded-full',
+              {'!bg-black': isDarkMode}
+            )}
+          />
         </div>
       </button>
     </div>
