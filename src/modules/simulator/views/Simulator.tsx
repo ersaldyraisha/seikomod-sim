@@ -267,7 +267,7 @@ function Result() {
   
   return (
     <motion.div
-      className="flex items-center justify-center fixed left-1/2 top-1/2"
+      className="flex items-center justify-center fixed left-1/2 top-[50vh]"
       initial={{
         translateY: '-50%',
         translateX: '-50%'
