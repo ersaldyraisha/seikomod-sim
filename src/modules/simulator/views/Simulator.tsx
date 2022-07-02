@@ -1,66 +1,15 @@
-import { useState, useEffect } from 'react'
 import classNames from 'classnames'
-import createStore from 'zustand'
-import { getItems, getCategories, CategoryId, Item } from '../services'
+import { useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { getItems, getCategories, categoryIds, Item } from '../utils'
+import { useSimulator } from '../store'
 
-const categoryIds : Array<CategoryId> = ['case' , 'dial' , 'bezel' , 'insert' , 'chapter' , 'strap', 'hands']
-
-// store
-type SimulatorState = {
-  isDarkMode: boolean
-  activeCategoryId: CategoryId | ''
-  activeItems: {
-    case?: Item,
-    dial?: Item,
-    hands?: Item,
-    bezel?: Item,
-    insert?: Item,
-    chapter?: Item,
-    strap?: Item,
-  }
-  setActiveCategory: (payload: CategoryId | '') => void
-  setActiveItem: (payload: Item) => void
-  filterUncompatibleItems: () => void
-  toggleDarkMode: () => void
-}
-
-const useSimulator = createStore<SimulatorState>((set) => ({
-  isDarkMode: false,
-  activeCategoryId: '',
-  activeItems: {},
-  toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
-  setActiveCategory: (payload) => set(() => ({ activeCategoryId: payload })),
-  setActiveItem: (payload) => set((state) => {
-    if (payload?.type) {
-      const { activeItems } = JSON.parse(JSON.stringify(state))
-      activeItems[payload.type] = payload
-      return { activeItems }
-    }
-    return state
-  }),
-  filterUncompatibleItems: () => set((state) => {
-    const { activeItems } = JSON.parse(JSON.stringify(state))
-    const newValue : SimulatorState['activeItems'] = {}
-
-    categoryIds.forEach(type => {
-      const isDialFit = activeItems[type]?.dialDiameter && activeItems[type]?.dialDiameter === activeItems.case?.dialDiameter
-      const isCompatible = activeItems[type]?.compatibility.includes(activeItems.case?.id)
-      if(type === 'case' || isDialFit || isCompatible) newValue[type] = activeItems[type]
-    })
-    
-    return {
-      activeItems: newValue
-    }
-  }),
-}))
-
-// components
 function Simulator() {
   const isDarkMode = useSimulator(state => state.isDarkMode)
   
   return (
     <div className={classNames(
-      'flex flex-col h-[100vh] justify-between items-center',
+      'flex flex-col h-[100vh] justify-between items-center overflow-hidden',
       {'bg-zinc-800 !text-zinc-200': isDarkMode}
     )}>
       <TitleBar/>
@@ -98,7 +47,7 @@ function Navbar() {
   ))
   
   return(
-    <nav className="pb-10 pt-7">
+    <nav className="pb-10 pt-7 relative z-10">
       <ul className={classNames(
         'flex justify-center bg-zinc-200 gap-[20px] rounded-full p-2',
         { '!bg-zinc-900': isDarkMode }
@@ -137,69 +86,107 @@ function Picker() {
   
   const renderedItems = items.slice((page - 1) * 7, page * 7)
     .map((item) => (
-      <li 
-        key={item.id}
+      <motion.li
+        key={`${item.type}-${item.id}`}
         className={classNames(
           'flex flex-col shrink-0 py-2 rounded-lg text-center cursor-pointer w-[165px]',
           {'bg-blue-600 text-white': item.id === activeItems[activeCategoryId || 'case']?.id}
         )}
         onClick={() => handleItemSelect(item)}
+        initial={{ y: 25, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 25, opacity: 0}}
       >
         <img src={item?.src} alt={item?.name} />
         <p className='font-bold'>{item?.name}</p>
         <p className='text-sm'>{item?.description}</p>
-      </li>
+      </motion.li>
     ))
 
   const isPrevActive = page > 1
   const isNextActive = page < (items?.length ?? 0) / 7
 
-  return activeCategoryId ? (
-    <div className={classNames(
-      'flex justify-center items-center gap-3 relative pt-4 min-h-[242px] border-t border-t-zinc-200 w-full',
-      { '!border-t-zinc-700': isDarkMode }
-    )}>
-      <button
-        className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
-        disabled={!isPrevActive}
-        onClick={() => { if(isPrevActive) setPage(page - 1)}}
-        >
-        &lsaquo;
-      </button>
+  return ( 
+    <AnimatePresence>
+      { activeCategoryId && (
+        <motion.div 
+          className={classNames(
+            'flex justify-center items-center gap-3 relative mt-auto pt-4 min-h-[242px] border-t border-t-zinc-200 w-full',
+            { '!border-t-zinc-700': isDarkMode }
+          )}
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          >
+          <button
+            className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
+            disabled={!isPrevActive}
+            onClick={() => { if(isPrevActive) setPage(page - 1)}}
+          >
+            &lsaquo;
+          </button>
+          
+          <ul className="flex gap-2 w-[1200px]">
+            {renderedItems.length > 0 ? renderedItems : activeItems.case 
+            ? (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="w-full text-center"
+              >
+                No items.
+              </motion.p>
+            ) : (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="w-full text-center"
+              >
+                Select case first.
+              </motion.p>
+            )}
+          </ul>
 
-      <ul className="flex gap-2 w-[1200px]">
-        {renderedItems.length > 0 ? renderedItems : activeItems.case ? (
-          <p className="w-full text-center">No items.</p>
-          ) : (
-          <p className="w-full text-center">Select case first.</p>
-        )}
-      </ul>
-
-      <button
-        className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
-        disabled={!isNextActive}
-        onClick={() => { if(isNextActive) setPage(page + 1) }}
-      >
-        &rsaquo;
-      </button>
-    </div>
-  ) : null
+          <button
+            className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
+            disabled={!isNextActive}
+            onClick={() => { if(isNextActive) setPage(page + 1) }}
+          >
+            &rsaquo;
+          </button>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
 }
 
 function Result() {
   const activeItems = useSimulator(state => state.activeItems)
+  const activeCategoryId = useSimulator(state => state.activeCategoryId)
 
   const renderedResult = categoryIds.map(id => activeItems[id] ? (
     <img key={`result-${id}`} className='absolute inset w-full' src={activeItems[id]?.src} alt="result" />
   ) : null)
 
+  const animationVariants = {
+    open: { opacity: 1, y: 100 },
+    closed: { opacity: 1, y: 200 },
+  }
+
   return (
-    <div className="grow flex items-center">
+    <motion.div
+      animate={!!activeCategoryId ? "open" : "closed"}
+      variants={animationVariants}
+      className="flex items-center"
+    >
       <div className="relative w-[450px] h-[450px]">
-        <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-black rounded-full" />
+        {activeItems.case
+          && <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-black rounded-full" />}
         {renderedResult}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -216,17 +203,17 @@ function TitleBar() {
         <span className='block text-xl leading-none'>
           The
         </span> 
-        <span className='block text-3xl font-black leading-none'>
-          SEIKONATOR
+        <span className='block text-5xl font-black leading-none tracking-tight'>
+          Seikonator
         </span> 
       </h1>
       <button onClick={() => toggleDarkMode()}>
         <div className={classNames(
-          'flex bg-zinc-200 p-1 rounded-full w-[35px]',
+          'flex bg-zinc-200 p-1 rounded-full w-[45px]',
           {'!bg-blue-600 justify-end': !isDarkMode},
         )}>
           <div className={classNames(
-            'w-3 h-3 bg-white rounded-full',
+            'w-4 h-4 bg-white rounded-full',
             {'!bg-black': isDarkMode}
           )} />
         </div>

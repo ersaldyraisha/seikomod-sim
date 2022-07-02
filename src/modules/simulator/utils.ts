@@ -1,4 +1,43 @@
-export default {
+export type CategoryId = 'case' | 'dial' | 'hands' | 'bezel' | 'insert' | 'chapter' | 'strap' 
+
+export const categoryIds : Array<CategoryId> = ['case' , 'dial' , 'bezel' , 'insert' , 'chapter' , 'strap', 'hands']
+
+export function getCategories() {
+  return [
+    { id: 'case', name: 'Case' },
+    { id: 'dial', name: 'Dial' },
+    { id: 'hands', name: 'Hands' },
+    { id: 'bezel', name: 'Bezel' },
+    { id: 'insert', name: 'Bezel Insert' },
+    { id: 'chapter', name: 'Chapter Ring' },
+    { id: 'strap', name: 'Strap' }
+  ] as Array<{
+    id: CategoryId,
+    name: string
+  }>
+}
+
+export type Item = {
+  id: string
+  name: string
+  src: string
+  description: string
+  compatibility: Array<string>
+  type: CategoryId
+  dialDiameter?: number
+}
+
+type Items = {
+  case: Array<Item>
+  dial: Array<Item>
+  hands: Array<Item>
+  bezel: Array<Item>
+  insert: Array<Item>
+  chapter: Array<Item>
+  strap: Array<Item>
+}
+
+const items : Items = {
   case: [
     {
       id: '4r36-01e0',
@@ -70,4 +109,15 @@ export default {
     }
   ],
   strap: []
+}
+
+export function getItems(categoryId: CategoryId, caseId: string | undefined) {
+  if (!categoryId) return []
+  return items[categoryId].filter((item) => {
+    if(item.type === 'case') return true
+    if(!caseId) return false
+    if(!item.dialDiameter && item.compatibility.includes(caseId)) return true
+    if(item.dialDiameter === items.case.find((item) => item.id === caseId)?.dialDiameter) return true
+    return false
+  })
 }

@@ -1,4 +1,4 @@
-import { Simulator } from './views/Simulator'
+import { Simulator } from './modules/simulator/views/Simulator'
 
 // TODO: use routes
 function App() {
