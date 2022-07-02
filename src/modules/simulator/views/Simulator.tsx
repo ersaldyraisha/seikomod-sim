@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import resetIcon from '../../../assets/images/icon-reset.png'
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { getItems, getCategories, categoryIds, Item } from '../utils'
@@ -26,6 +27,7 @@ function Navbar() {
   const activeNavId = useSimulator(state => state.activeCategoryId)
   const activeItems = useSimulator(state => state.activeItems)
   const setActiveNav = useSimulator(state => state.setActiveCategory)
+  const resetActiveItems = useSimulator(state => state.resetActiveItems)
   
   const renderedNavItems = navItems.map(nav => (
     <li key={nav.id}>
@@ -45,10 +47,21 @@ function Navbar() {
       >
         {nav.name}
         {nav.id === 'case' && !activeItems.case && activeNavId !== 'case' && (
-          <div className="absolute top-0 left-0 w-full h-full rounded-full bg-blue-600 opacity-50 animate-ping" />
+          <div className={classNames(
+            'absolute top-0 left-0 w-full h-full rounded-full bg-blue-400 opacity-50 animate-ping',
+            {'!bg-white': isDarkMode}
+            )}
+          />
         )}
         {activeItems[nav.id] && (
-          <div className="absolute top-0 right-[-2px] w-[8px] h-[8px] rounded-full bg-red-600" />
+          <AnimatePresence>
+            <motion.div 
+              className="absolute top-0 right-[-2px] w-[8px] h-[8px] rounded-full bg-red-600"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+            />
+          </AnimatePresence>
         )}
       </button>
     </li>
@@ -62,6 +75,11 @@ function Navbar() {
       )}>
         {renderedNavItems}
       </ul>
+      {!!activeItems.case && (
+        <button className="absolute top-8 left-full ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" onClick={() => resetActiveItems()}>
+          <img src={resetIcon} alt="reset" />
+        </button>
+      )}
     </nav>
   )
 }
@@ -74,6 +92,7 @@ function Picker() {
   const activeCategoryId = useSimulator(state => state.activeCategoryId)
   const activeItems = useSimulator(state => state.activeItems)
   const setActiveItem = useSimulator(state => state.setActiveItem)
+  const removeActiveItem = useSimulator(state => state.removeActiveItem)
   const filterUncompatibleItems = useSimulator(state => state.filterUncompatibleItems)
 
   useEffect(() => {
@@ -93,23 +112,38 @@ function Picker() {
   }
   
   const renderedItems = items.slice((page - 1) * 7, page * 7)
-    .map((item) => (
-      <motion.li
-        key={`${item.type}-${item.id}`}
-        className={classNames(
-          'flex flex-col shrink-0 py-2 rounded-lg text-center cursor-pointer w-[165px]',
-          {'bg-blue-600 text-white': item.id === activeItems[activeCategoryId || 'case']?.id}
-        )}
-        onClick={() => handleItemSelect(item)}
-        initial={{ y: 25, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 25, opacity: 0}}
-      >
-        <img src={item?.src} alt={item?.name} />
-        <p className='font-bold'>{item?.name}</p>
-        <p className='text-sm'>{item?.description}</p>
-      </motion.li>
-    ))
+    .map((item) => {
+      const isSelected = item.id === activeItems[activeCategoryId || 'case']?.id
+      return (
+        <motion.li
+          key={`${item.type}-${item.id}`}
+          className={classNames(
+            'flex flex-col shrink-0 relative py-2 rounded-lg text-center cursor-pointer w-[165px] transition-colors',
+            { 'bg-blue-600 text-white': isSelected }
+          )}
+          onClick={() => handleItemSelect(item)}
+          initial={{ y: 25, opacity: 0, scale: 0.9}}
+          animate={{ y: 0, opacity: 1, scale: 1 }}
+          exit={{ y: 25, opacity: 0}}
+          >
+          <img className="pointer-events-none" src={item?.src} alt={item?.name} />
+          <p className="font-bold">{item?.name}</p>
+          <p className="text-sm">{item?.description}</p>
+          { isSelected && (
+            <button
+              className="absolute top-0 right-2 text-2xl"
+              onClick={(e) => {
+                e.stopPropagation()
+                removeActiveItem(item.type)
+                if(item.type === 'case') filterUncompatibleItems()
+              }}
+            >
+              &times;
+            </button>
+          )}
+        </motion.li>
+      )
+    })
 
   const isPrevActive = page > 1
   const isNextActive = page < (items?.length ?? 0) / 7
@@ -122,9 +156,9 @@ function Picker() {
             'flex justify-center items-center gap-3 relative mt-auto pt-4 min-h-[242px] border-t border-t-zinc-200 w-full',
             { '!border-t-zinc-700': isDarkMode }
           )}
-          initial={{ y: 100, opacity: 0 }}
+          initial={{ y: 250, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
+          exit={{ y: 250, opacity: 0 }}
           >
           <button
             className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
@@ -134,7 +168,7 @@ function Picker() {
             &lsaquo;
           </button>
           
-          <ul className="flex gap-2 w-[1200px]">
+          <ul className="flex gap-2 justify-center w-[1200px]">
             {renderedItems.length > 0 ? renderedItems : activeItems.case 
             ? (
               <motion.p 
@@ -175,7 +209,13 @@ function Result() {
   const activeCategoryId = useSimulator(state => state.activeCategoryId)
 
   const renderedResult = categoryIds.map(id => activeItems[id] ? (
-    <img key={`result-${id}`} className='absolute inset w-full' src={activeItems[id]?.src} alt="result" />
+    <motion.img
+      key={`result-${id}`} className='absolute inset w-full' src={activeItems[id]?.src} alt="result"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    />
   ) : null)
   
   return (
@@ -190,7 +230,9 @@ function Result() {
       <div className="relative w-[450px] h-[450px]">
         {activeItems.case
           && <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-gray-500 rounded-full" />}
-        {renderedResult}
+        <AnimatePresence>
+          {renderedResult}
+        </AnimatePresence>
       </div>
     </motion.div>
   )
@@ -199,6 +241,12 @@ function Result() {
 function TitleBar() {
   const isDarkMode = useSimulator(state => state.isDarkMode)
   const toggleDarkMode = useSimulator(state => state.toggleDarkMode)
+
+  useEffect(() => {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      toggleDarkMode(true)
+    }
+  }, [])
 
   return (
     <div className="flex fixed justify-between pt-8 w-[1200px]">

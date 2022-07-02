@@ -16,15 +16,23 @@ type SimulatorState = {
   setActiveCategory: (payload: CategoryId | '') => void
   setActiveItem: (payload: Item) => void
   filterUncompatibleItems: () => void
-  toggleDarkMode: () => void
+  toggleDarkMode: (paylaod?: boolean) => void
+  resetActiveItems: () => void
+  removeActiveItem: (payload: CategoryId) => void
 }
 
 const useSimulator = createStore<SimulatorState>((set) => ({
   isDarkMode: false,
   activeCategoryId: '',
   activeItems: {},
-  toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
+
+  toggleDarkMode: (payload) => set((state) => {
+    if(payload !== undefined) return {isDarkMode: payload}
+    return { isDarkMode: !state.isDarkMode }
+  }),
+
   setActiveCategory: (payload) => set(() => ({ activeCategoryId: payload })),
+
   setActiveItem: (payload) => set((state) => {
     if (payload?.type) {
       const { activeItems } = JSON.parse(JSON.stringify(state))
@@ -33,6 +41,18 @@ const useSimulator = createStore<SimulatorState>((set) => ({
     }
     return state
   }),
+
+  removeActiveItem: (payload) => set((state) => {
+    const { activeItems } = JSON.parse(JSON.stringify(state))
+    delete activeItems[payload]
+    return {activeItems}
+  }),
+
+  resetActiveItems: () => set((state) => { 
+    state.setActiveCategory('case')
+    return { activeItems: {} }
+  }),
+  
   filterUncompatibleItems: () => set((state) => {
     const { activeItems } = JSON.parse(JSON.stringify(state))
     const newValue : SimulatorState['activeItems'] = {}
@@ -43,9 +63,7 @@ const useSimulator = createStore<SimulatorState>((set) => ({
       if(type === 'case' || isDialFit || isCompatible) newValue[type] = activeItems[type]
     })
     
-    return {
-      activeItems: newValue
-    }
+    return { activeItems: newValue }
   }),
 }))
 
