@@ -22,49 +22,6 @@ function Simulator() {
   )
 }
 
-function ItemsInfo() {
-  const [isActive, setActive] = useState(false)
-  const activeItems = useSimulator(state => state.activeItems)
-  const isDarkMode = useSimulator(state => state.isDarkMode)
-
-  const itemsList = categoryIds
-    .filter((item) => !!activeItems[item])
-    .map((item) => {
-      return (
-        <li className="mb-2 last:mb-0">
-          <p className="text-xs">{`${item[0].toUpperCase()}${item.substring(1)}`}</p>
-          <p className="text-sm font-bold">{activeItems[item]?.name}</p>
-        </li>
-      )
-    })
-
-  return (
-    <button 
-      className="absolute top-8 right-full mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
-      onMouseEnter={() => setActive(true)}
-      onMouseLeave={() => setActive(false)}
-    >
-      <AnimatePresence>
-        {isActive && (
-          <motion.ul
-            className={classNames(
-              'absolute bottom-[calc(100%+10px)] left-1/2 min-w-[120px] p-3 text-left bg-zinc-200 text-red rounded-lg cursor-default pointer-events-none',
-              { '!bg-zinc-700' : isDarkMode }
-            )}
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: 20, x: '-50%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-          >
-            {itemsList}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-      <img src={infoIcon} alt="reset" />
-    </button>
-  )
-}
-
 function Category() {
   const navItems = getCategories()
   const isDarkMode = useSimulator(state => state.isDarkMode)
@@ -124,10 +81,53 @@ function Category() {
           <button className="absolute top-8 left-full ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" onClick={() => resetActiveItems()}>
             <img src={resetIcon} alt="reset" />
           </button>
-          <ItemsInfo/>
+          <Tooltip/>
         </>
       )}
     </nav>
+  )
+}
+
+function Tooltip() {
+  const [isActive, setActive] = useState(false)
+  const activeItems = useSimulator(state => state.activeItems)
+  const isDarkMode = useSimulator(state => state.isDarkMode)
+
+  const itemsList = categoryIds
+    .filter((item) => !!activeItems[item])
+    .map((item) => {
+      return (
+        <li className="mb-2 last:mb-0">
+          <p className="text-xs">{`${item[0].toUpperCase()}${item.substring(1)}`}</p>
+          <p className="text-sm font-bold">{activeItems[item]?.name}</p>
+        </li>
+      )
+    })
+
+  return (
+    <button 
+      className="absolute top-8 right-full mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+    >
+      <AnimatePresence>
+        {isActive && (
+          <motion.ul
+            className={classNames(
+              'absolute bottom-[calc(100%+10px)] left-1/2 min-w-[120px] p-3 text-left bg-zinc-200 text-red rounded-lg cursor-default pointer-events-none',
+              { '!bg-zinc-700' : isDarkMode }
+            )}
+            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, y: 20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+          >
+            {itemsList}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+      <img src={infoIcon} alt="reset" />
+    </button>
   )
 }
 
@@ -267,11 +267,15 @@ function Result() {
   
   return (
     <motion.div
-      className="flex items-center justify-center mx-auto"
+      className="flex items-center justify-center fixed left-1/2 top-1/2"
+      initial={{
+        translateY: '-50%',
+        translateX: '-50%'
+      }}
       animate={!!activeCategoryId ? 'open' : 'closed'}
       variants={{
-        open: { opacity: 1, y: 100 },
-        closed: { opacity: 1, y: 200 },
+        open: { opacity: 1, y: -150 },
+        closed: { opacity: 1, y: 0 },
       }}
     >
       <div className="relative w-[450px] h-[450px]">
