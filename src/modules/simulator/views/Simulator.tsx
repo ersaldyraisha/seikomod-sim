@@ -223,7 +223,7 @@ function Parts() {
           </button>
 
           <button
-            className="absolute left-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:opacity-20
+            className="absolute left-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:invisible
               md:relative md:text-7xl"
             disabled={!isPrevActive}
             onClick={() => { if(isPrevActive) setPage(page - 1)}}
@@ -255,7 +255,7 @@ function Parts() {
           </ul>
 
           <button
-            className="absolute right-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:opacity-20
+            className="absolute right-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:invisible
               md:relative md:text-7xl"
             disabled={!isNextActive}
             onClick={() => { if(isNextActive) setPage(page + 1) }}
@@ -303,7 +303,9 @@ function Result() {
         )}
         {!activeItems.case && (
           <>
-            <img className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-full" src={isDarkMode ? resultPlaceholderDark : resultPlaceholderLight } alt="start-customizing" />
+            <img 
+              className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-full"
+              src={isDarkMode ? resultPlaceholderDark : resultPlaceholderLight } alt="start-customizing" />
             <p className={classNames(
               'absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] text-center font-bold text-gray-400',
               {'!text-white': isDarkMode}
