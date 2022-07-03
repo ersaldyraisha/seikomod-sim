@@ -60,7 +60,7 @@ const useSimulator = createStore<SimulatorState>((set) => ({
 
     categoryIds.forEach(type => {
       const isDialFit = activeItems[type]?.dialDiameter && activeItems[type]?.dialDiameter === activeItems.case?.dialDiameter
-      const isCompatible = activeItems[type]?.compatibility.includes(activeItems.case?.id)
+      const isCompatible = activeItems[type]?.compatibility.includes(activeItems.case?.compatibility[0])
       if(type === 'case' || isDialFit || isCompatible) newValue[type] = activeItems[type]
     })
     

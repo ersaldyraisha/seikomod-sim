@@ -69,7 +69,7 @@ function Category() {
   ))
   
   return(
-    <nav className="fixed bottom-2 left-1/2 z-10 md:pb-10 pt-7 translate-x-[-50%] max-w-full md:max-w-[90%]">
+    <nav className="fixed bottom-2 left-1/2 z-10 md:pb-10 mt-7 translate-x-[-50%] max-w-full md:max-w-[90%]">
       <ul className={classNames(
         'flex gap-[5px] md:rounded-full px-5 py-2 md:p-2 mx-auto overflow-x-auto overflow-y-hidden',
         'md:gap-[10px] md:bg-zinc-200 md:justify-center',
@@ -151,12 +151,13 @@ function Parts() {
 
   useEffect(() => {
     if(activeCategoryId) {
-      const newItems = getItems(activeCategoryId, activeItems.case?.id)
+      const newItems = getItems(activeCategoryId, activeItems.case?.compatibility[0])
       setItems(newItems)
     } else {
       setItems([])
     }
-  }, [activeCategoryId, activeItems])
+    setPage(1)
+  }, [activeCategoryId])
 
   function handleItemSelect(item: Item) {
     setActiveItem(item)
@@ -223,7 +224,7 @@ function Parts() {
           </button>
 
           <button
-            className="absolute left-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:invisible
+            className="absolute left-0 top-[calc(100%-3px)] z-10 px-[20px] text-5xl text-zinc-400 font-light disabled:invisible
               md:relative md:text-7xl"
             disabled={!isPrevActive}
             onClick={() => { if(isPrevActive) setPage(page - 1)}}
