@@ -8,6 +8,8 @@ import { useSimulator } from '../store'
 import { Item } from '../types'
 import resetIcon from '../../../assets/images/icon-reset.png'
 import infoIcon from '../../../assets/images/icon-info.png'
+import checkIcon from '../../../assets/images/icon-check.svg'
+import chevronIcon from '../../../assets/images/icon-chevron-down.png'
 import resultPlaceholderDark from '../../../assets/images/placeholder-white.png'
 import resultPlaceholderLight from '../../../assets/images/placeholder-gray.png'
 
@@ -30,9 +32,9 @@ function Simulator() {
 function Category() {
   const navItems = getCategories()
   const isDarkMode = useSimulator(state => state.isDarkMode)
-  const activeNavId = useSimulator(state => state.activeCategoryId)
+  const activeCategoryId = useSimulator(state => state.activeCategoryId)
   const activeItems = useSimulator(state => state.activeItems)
-  const setActiveNav = useSimulator(state => state.setActiveCategory)
+  const setActiveCategory = useSimulator(state => state.setActiveCategory)
   const resetActiveItems = useSimulator(state => state.resetActiveItems)
   
   const renderedNavItems = navItems.map(nav => (
@@ -42,18 +44,18 @@ function Category() {
           classNames(
             'relative px-3 py-1 rounded-full md:bg-transparent text-black font-bold cursor-pointer whitespace-nowrap',
             { 'outline:animate-ping': true},
-            { '!bg-blue-600 !text-white': activeNavId === nav.id },
+            { '!bg-blue-600 !text-white': activeCategoryId === nav.id },
             { 'bg-zinc-200': !isDarkMode},
             { 'bg-zinc-900 !text-zinc-200': isDarkMode}
           )
         }
         onClick={() => {
-          if(activeNavId !== nav.id) setActiveNav(nav.id)
-          else setActiveNav('')
+          if(activeCategoryId !== nav.id) setActiveCategory(nav.id)
+          else setActiveCategory('')
         }}
       >
         {nav.name}
-        {nav.id === 'case' && !activeItems.case && activeNavId !== 'case' && (
+        {nav.id === 'case' && !activeItems.case && activeCategoryId !== 'case' && (
           <div className={classNames(
             'absolute top-0 left-0 w-full h-full rounded-full bg-blue-400 opacity-50 animate-ping',
             {'!bg-white': isDarkMode}
@@ -61,14 +63,7 @@ function Category() {
           />
         )}
         {activeItems[nav.id] && (
-          <AnimatePresence>
-            <motion.div 
-              className="absolute top-0 right-[-2px] w-[8px] h-[8px] rounded-full bg-red-600"
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-            />
-          </AnimatePresence>
+          <img className="absolute top-0 right-[-2px] w-[12px] h-[12px]" src={checkIcon} alt="checked" />
         )}
       </button>
     </li>
@@ -107,7 +102,7 @@ function Tooltip() {
     .filter((item) => !!activeItems[item])
     .map((item) => {
       return (
-        <li className="mb-2 last:mb-0">
+        <li className="mb-2 last:mb-0" key={`info-${item}-${activeItems[item]?.id}`}>
           <p className="text-xs">{`${item[0].toUpperCase()}${item.substring(1)}`}</p>
           <p className="text-sm font-bold">{activeItems[item]?.name}</p>
         </li>
@@ -115,7 +110,7 @@ function Tooltip() {
     })
 
   return (
-    <button 
+    <button
       className="absolute right-[calc(50%+5px)] bottom-14 md:top-8 md:right-full md:mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
@@ -150,6 +145,7 @@ function Parts() {
   const activeCategoryId = useSimulator(state => state.activeCategoryId)
   const activeItems = useSimulator(state => state.activeItems)
   const setActiveItem = useSimulator(state => state.setActiveItem)
+  const setActiveCategory = useSimulator(state => state.setActiveCategory)
   const removeActiveItem = useSimulator(state => state.removeActiveItem)
   const filterUncompatibleItems = useSimulator(state => state.filterUncompatibleItems)
 
@@ -209,7 +205,7 @@ function Parts() {
   return ( 
     <AnimatePresence>
       { activeCategoryId && (
-        <motion.div 
+        <motion.div
           className={classNames(
             'flex justify-center items-center gap-3 fixed bottom-[110px] pt-4 w-full min-h-[242px] border-t border-t-zinc-200 bg-white',
             { '!border-t-zinc-700 !bg-zinc-800': isDarkMode }
@@ -218,6 +214,13 @@ function Parts() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 250, opacity: 0 }}
           >
+
+          <button
+            className="flex items-center justify-center absolute bottom-[calc(100%+10px)] right-1/2 w-8 h-8 p-2 bg-red-500 text-2xl rounded-full text-white translate-x-1/2 md:hidden"
+            onClick={() => setActiveCategory('')}
+          >
+            <img src={chevronIcon} alt="close" />
+          </button>
 
           {/* TODO: Handle pagination on mobile view*/}
           <button
