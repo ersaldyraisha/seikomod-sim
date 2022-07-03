@@ -180,7 +180,7 @@ function Parts() {
           animate={{ y: 0, opacity: 1, scale: 1 }}
           exit={{ y: 25, opacity: 0}}
           >
-          <img className="pointer-events-none" src={item?.src} alt={item?.name} />
+          <img className="pointer-events-none w-full aspect-square" src={item?.src} alt={item?.name} />
           <p className="font-bold">{item?.name}</p>
           <p className="text-sm">{item?.description}</p>
           { isSelected && (
