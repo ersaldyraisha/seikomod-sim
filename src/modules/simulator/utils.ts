@@ -1,4 +1,4 @@
-export type CategoryId = 'case' | 'dial' | 'hands' | 'bezel' | 'insert' | 'chapter' | 'strap' 
+import {Items, CategoryId} from './types'
 
 export const categoryIds : Array<CategoryId> = ['case' , 'dial' , 'bezel' , 'insert' , 'chapter' , 'strap', 'hands']
 
@@ -15,26 +15,6 @@ export function getCategories() {
     id: CategoryId,
     name: string
   }>
-}
-
-export type Item = {
-  id: string
-  name: string
-  src: string
-  description: string
-  compatibility: Array<string>
-  type: CategoryId
-  dialDiameter?: number
-}
-
-type Items = {
-  case: Array<Item>
-  dial: Array<Item>
-  hands: Array<Item>
-  bezel: Array<Item>
-  insert: Array<Item>
-  chapter: Array<Item>
-  strap: Array<Item>
 }
 
 const items : Items = {
@@ -99,7 +79,7 @@ const items : Items = {
       id: 'skx007',
       name: 'SKX007',
       src: 'https://seikonator.web.app/assets/dials/skx007.png',
-      description: 'Diameter - 28.5mm',
+      description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
       dialDiameter: 28.5
@@ -108,7 +88,7 @@ const items : Items = {
       id: 'srpe55',
       name: 'SRPE55',
       src: 'https://seikonator.web.app/assets/dials/srpe55.png',
-      description: 'Diameter - 28.5mm',
+      description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
       dialDiameter: 28.5
@@ -117,7 +97,7 @@ const items : Items = {
       id: 'srpd55',
       name: 'SRPD55',
       src: 'https://seikonator.web.app/assets/dials/srpd55.png',
-      description: 'Diameter - 28.5mm',
+      description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
       dialDiameter: 28.5
@@ -126,7 +106,7 @@ const items : Items = {
       id: 'srp777',
       name: 'SRP777',
       src: 'https://seikonator.web.app/assets/dials/srp777.png',
-      description: 'Diameter - 28.5mm',
+      description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
       dialDiameter: 28.5
@@ -135,7 +115,7 @@ const items : Items = {
       id: 'snk809',
       name: 'SNK809',
       src: 'https://seikonator.web.app/assets/dials/snk809.png',
-      description: 'Diameter - 28.5mm',
+      description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
       dialDiameter: 28.5

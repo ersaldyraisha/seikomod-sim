@@ -1,15 +1,15 @@
-// TODO: make responsive
 // TODO: use API for data call?
 
 import classNames from 'classnames'
+import { useState, useEffect } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { getItems, getCategories, categoryIds } from '../utils'
+import { useSimulator } from '../store'
+import { Item } from '../types'
 import resetIcon from '../../../assets/images/icon-reset.png'
 import infoIcon from '../../../assets/images/icon-info.png'
 import resultPlaceholderDark from '../../../assets/images/placeholder-white.png'
 import resultPlaceholderLight from '../../../assets/images/placeholder-gray.png'
-import { useState, useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { getItems, getCategories, categoryIds, Item } from '../utils'
-import { useSimulator } from '../store'
 
 function Simulator() {
   const isDarkMode = useSimulator(state => state.isDarkMode)
@@ -21,7 +21,7 @@ function Simulator() {
     )}>
       <Navbar/>
       <Result />
-      <Items />
+      <Parts />
       <Category />
     </div>  
   )
@@ -40,10 +40,11 @@ function Category() {
       <button
         className={
           classNames(
-            'relative px-3 py-1 rounded-full text-black font-bold cursor-pointer whitespace-nowrap',
+            'relative px-3 py-1 rounded-full md:bg-transparent text-black font-bold cursor-pointer whitespace-nowrap',
             { 'outline:animate-ping': true},
-            { 'bg-blue-600 !text-white': activeNavId === nav.id },
-            { '!text-zinc-200': isDarkMode}
+            { '!bg-blue-600 !text-white': activeNavId === nav.id },
+            { 'bg-zinc-200': !isDarkMode},
+            { 'bg-zinc-900 !text-zinc-200': isDarkMode}
           )
         }
         onClick={() => {
@@ -74,16 +75,20 @@ function Category() {
   ))
   
   return(
-    <nav className="fixed bottom-0 left-1/2 z-10 pb-10 pt-7 translate-x-[-50%]">
+    <nav className="fixed bottom-2 left-1/2 z-10 md:pb-10 pt-7 translate-x-[-50%] max-w-full md:max-w-[90%]">
       <ul className={classNames(
-        'flex justify-center bg-zinc-200 gap-[20px] rounded-full p-2 mx-auto',
-        { '!bg-zinc-900': isDarkMode }
+        'flex gap-[5px] md:rounded-full px-5 py-2 md:p-2 mx-auto overflow-x-auto overflow-y-hidden',
+        'md:gap-[10px] md:bg-zinc-200 md:justify-center',
+        { 'md:bg-zinc-900': isDarkMode }
       )}>
         {renderedNavItems}
       </ul>
       {!!activeItems.case && (
         <>
-          <button className="absolute top-8 left-full ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" onClick={() => resetActiveItems()}>
+          <button 
+            className="absolute left-[calc(50%+5px)] bottom-14 md:top-8 md:left-full md:ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" 
+            onClick={() => resetActiveItems()}
+          >
             <img src={resetIcon} alt="reset" />
           </button>
           <Tooltip/>
@@ -111,7 +116,7 @@ function Tooltip() {
 
   return (
     <button 
-      className="absolute top-8 right-full mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
+      className="absolute right-[calc(50%+5px)] bottom-14 md:top-8 md:right-full md:mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
     >
@@ -136,7 +141,8 @@ function Tooltip() {
   )
 }
 
-function Items() {
+function Parts() {
+  const pageSize = 6
   const [page, setPage] = useState(1)
   const [items, setItems] = useState<Array<Item>>([])
   
@@ -162,15 +168,15 @@ function Items() {
       filterUncompatibleItems()
     }
   }
-  
-  const renderedItems = items.slice((page - 1) * 7, page * 7)
+
+  const renderedItems = items.slice((page - 1) * pageSize, page * pageSize)
     .map((item) => {
       const isSelected = item.id === activeItems[activeCategoryId || 'case']?.id
       return (
         <motion.li
           key={`${item.type}-${item.id}`}
           className={classNames(
-            'flex flex-col shrink-0 relative py-2 rounded-lg text-center cursor-pointer w-[165px] transition-colors',
+            'flex flex-col shrink-0 relative py-2 rounded-lg text-center cursor-pointer w-[110px] md:w-[165px] transition-colors',
             { 'bg-blue-600 text-white': isSelected }
           )}
           onClick={() => handleItemSelect(item)}
@@ -198,53 +204,55 @@ function Items() {
     })
 
   const isPrevActive = page > 1
-  const isNextActive = page < (items?.length ?? 0) / 7
+  const isNextActive = page < (items?.length ?? 0) / pageSize
 
   return ( 
     <AnimatePresence>
       { activeCategoryId && (
         <motion.div 
           className={classNames(
-            'flex justify-center items-center gap-3 fixed bottom-[105px] pt-4 w-full min-h-[242px] border-t border-t-zinc-200 bg-white',
+            'flex justify-center items-center gap-3 fixed bottom-[110px] pt-4 w-full min-h-[242px] border-t border-t-zinc-200 bg-white',
             { '!border-t-zinc-700 !bg-zinc-800': isDarkMode }
           )}
           initial={{ y: 250, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 250, opacity: 0 }}
           >
+
+          {/* TODO: Handle pagination on mobile view*/}
           <button
-            className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
+            className="hidden md:block px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
             disabled={!isPrevActive}
             onClick={() => { if(isPrevActive) setPage(page - 1)}}
           >
             &lsaquo;
           </button>
           
-          <ul className="flex gap-2 justify-center w-[1200px]">
+          <ul className="flex gap-2 grow justify-center flex-wrap md:flex-nowrap w-5/6 max-w-[1200px]">
             {renderedItems.length > 0 ? renderedItems : activeItems.case 
             ? (
-              <motion.p 
+              <motion.li
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="w-full text-center"
               >
                 No items.
-              </motion.p>
+              </motion.li>
             ) : (
-              <motion.p 
+              <motion.li
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 className="w-full text-center"
               >
                 Select case first.
-              </motion.p>
+              </motion.li>
             )}
           </ul>
 
           <button
-            className="px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
+            className="hidden md:block px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
             disabled={!isNextActive}
             onClick={() => { if(isNextActive) setPage(page + 1) }}
           >
@@ -284,13 +292,13 @@ function Result() {
         closed: { opacity: 1, y: 0 },
       }}
     >
-      <div className="relative w-[450px] h-[450px]">
+      <div className="relative w-[375px] h-[375px] md:w-[450px] md:h-[450px]">
         {activeItems.case && (
-          <div className="absolute inset w-[300px] h-[300px] top-[calc(50%-150px)] left-[calc(50%-150px)] bg-gray-500 rounded-full" />
+          <div className="absolute inset w-[250px] h-[250px] top-[calc(50%-125px)] left-[calc(50%-125px)] bg-gray-500 rounded-full" />
         )}
         {!activeItems.case && (
           <>
-            <img className="absolute inset w-full" src={isDarkMode ? resultPlaceholderDark : resultPlaceholderLight } alt="start-customizing" />
+            <img className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] w-full" src={isDarkMode ? resultPlaceholderDark : resultPlaceholderLight } alt="start-customizing" />
             <p className={classNames(
               'absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] text-center font-bold text-gray-400',
               {'!text-white': isDarkMode}
@@ -318,16 +326,20 @@ function Navbar() {
   }, [])
 
   return (
-    <div className="fixed w-full">
-      <div className="flex justify-between pt-8 mx-auto w-[1200px]">
+    <div className={classNames(
+      'fixed w-full z-10 md:bg-transparent',
+      { 'bg-zinc-800': isDarkMode },
+      { 'bg-white': !isDarkMode }
+    )}>
+      <div className="flex justify-between pt-8 pb-2 mx-auto w-5/6 max-w-[1200px]">
         <h1 className={classNames(
           'self-start font-title text-blue-600',
           { '!text-zinc-200': isDarkMode }
         )}>
-          <span className='block text-xl leading-none'>
+          <span className='block md:text-xl leading-none'>
             The
           </span> 
-          <span className='block text-5xl font-black leading-none tracking-tight'>
+          <span className='block text-3xl md:text-5xl font-black leading-none tracking-tight'>
             Seikonator
           </span> 
         </h1>

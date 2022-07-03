@@ -1,4 +1,5 @@
-import {Item, CategoryId, categoryIds} from './utils'
+import { categoryIds } from './utils'
+import { Item, CategoryId } from './types'
 import createStore from 'zustand'
 
 type SimulatorState = {
