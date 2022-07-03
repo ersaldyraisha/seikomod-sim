@@ -35,7 +35,6 @@ function Category() {
   const activeCategoryId = useSimulator(state => state.activeCategoryId)
   const activeItems = useSimulator(state => state.activeItems)
   const setActiveCategory = useSimulator(state => state.setActiveCategory)
-  const resetActiveItems = useSimulator(state => state.resetActiveItems)
   
   const renderedNavItems = navItems.map(nav => (
     <li key={nav.id}>
@@ -79,24 +78,17 @@ function Category() {
         {renderedNavItems}
       </ul>
       {!!activeItems.case && (
-        <>
-          <button 
-            className="absolute left-[calc(50%+5px)] bottom-14 md:top-8 md:left-full md:ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" 
-            onClick={() => resetActiveItems()}
-          >
-            <img src={resetIcon} alt="reset" />
-          </button>
-          <Tooltip/>
-        </>
+        <ActionButtons/>
       )}
     </nav>
   )
 }
 
-function Tooltip() {
+function ActionButtons() {
   const [isActive, setActive] = useState(false)
   const activeItems = useSimulator(state => state.activeItems)
   const isDarkMode = useSimulator(state => state.isDarkMode)
+  const resetActiveItems = useSimulator(state => state.resetActiveItems)
 
   const itemsList = categoryIds
     .filter((item) => !!activeItems[item])
@@ -110,29 +102,37 @@ function Tooltip() {
     })
 
   return (
-    <button
-      className="absolute right-[calc(50%+5px)] bottom-14 md:top-8 md:right-full md:mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
-      onMouseEnter={() => setActive(true)}
-      onMouseLeave={() => setActive(false)}
-    >
-      <AnimatePresence>
-        {isActive && (
-          <motion.ul
-            className={classNames(
-              'absolute bottom-[calc(100%+10px)] left-1/2 min-w-[120px] p-3 text-left bg-zinc-200 text-red rounded-lg cursor-default pointer-events-none',
-              { '!bg-zinc-700' : isDarkMode }
-            )}
-            onClick={(e) => e.stopPropagation()}
-            initial={{ opacity: 0, y: 20, x: '-50%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-          >
-            {itemsList}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-      <img src={infoIcon} alt="reset" />
-    </button>
+    <>
+      <button 
+        className="absolute left-[calc(50%+5px)] bottom-14 md:top-8 md:left-full md:ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" 
+        onClick={() => resetActiveItems()}
+      >
+        <img src={resetIcon} alt="reset" />
+      </button>
+      <button
+        className="absolute right-[calc(50%+5px)] bottom-14 md:top-8 md:right-full md:mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
+        onMouseEnter={() => setActive(true)}
+        onMouseLeave={() => setActive(false)}
+      >
+        <AnimatePresence>
+          {isActive && (
+            <motion.ul
+              className={classNames(
+                'absolute bottom-[calc(100%+10px)] left-1/2 min-w-[120px] p-3 text-left bg-zinc-200 text-red rounded-lg cursor-default pointer-events-none',
+                { '!bg-zinc-700' : isDarkMode }
+              )}
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, y: 20, x: '-50%' }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+            >
+              {itemsList}
+            </motion.ul>
+          )}
+        </AnimatePresence>
+        <img src={infoIcon} alt="reset" />
+      </button>
+    </>
   )
 }
 
@@ -222,9 +222,9 @@ function Parts() {
             <img src={chevronIcon} alt="close" />
           </button>
 
-          {/* TODO: Handle pagination on mobile view*/}
           <button
-            className="hidden md:block px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
+            className="absolute left-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:opacity-20
+              md:relative md:text-7xl"
             disabled={!isPrevActive}
             onClick={() => { if(isPrevActive) setPage(page - 1)}}
           >
@@ -255,7 +255,8 @@ function Parts() {
           </ul>
 
           <button
-            className="hidden md:block px-[20px] text-7xl text-zinc-400 font-light disabled:opacity-20"
+            className="absolute right-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:opacity-20
+              md:relative md:text-7xl"
             disabled={!isNextActive}
             onClick={() => { if(isNextActive) setPage(page + 1) }}
           >
@@ -297,7 +298,8 @@ function Result() {
     >
       <div className="relative w-[375px] h-[375px] md:w-[450px] md:h-[450px]">
         {activeItems.case && (
-          <div className="absolute inset w-[250px] h-[250px] top-[calc(50%-125px)] left-[calc(50%-125px)] bg-gray-500 rounded-full" />
+          <div className="absolute top-[calc(50%-125px)] left-[calc(50%-125px)] w-[250px] h-[250px] bg-gray-500 rounded-full
+            md:top-[calc(50%-150px)] md:left-[calc(50%-150px)] md:w-[300px] md:h-[300px]" />
         )}
         {!activeItems.case && (
           <>
