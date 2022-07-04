@@ -214,6 +214,7 @@ function Parts() {
   const swipeHandler = useSwipeable({
     onSwipedLeft: nextPage,
     onSwipedRight: prevPage,
+    onSwipedDown: () => setActiveCategory(''),
     trackMouse: true
   });  
 
@@ -228,7 +229,8 @@ function Parts() {
           initial={{ y: 250, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 250, opacity: 0 }}
-          >
+          { ...swipeHandler }
+        >
 
           <button
             className="flex items-center justify-center absolute bottom-[calc(100%+10px)] right-1/2 w-8 h-8 p-2 bg-red-500 text-2xl rounded-full text-white translate-x-1/2 md:hidden"
@@ -246,17 +248,14 @@ function Parts() {
             &lsaquo;
           </button>
           
-          <ul 
-            className="flex gap-2 grow justify-center flex-wrap md:flex-nowrap w-5/6 max-w-[1200px]"
-            {...swipeHandler}
-          >
+          <ul className="flex gap-2 grow justify-center flex-wrap md:flex-nowrap w-5/6 max-w-[1200px]">
             {renderedItems.length > 0 ? renderedItems : activeItems.case 
             ? (
               <motion.li
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="w-full text-center"
+                className="w-full text-center select-none"
               >
                 No items.
               </motion.li>
@@ -265,7 +264,7 @@ function Parts() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="w-full text-center"
+                className="w-full text-center select-none"
               >
                 Select case first.
               </motion.li>
