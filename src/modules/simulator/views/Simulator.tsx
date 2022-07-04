@@ -3,6 +3,7 @@
 import classNames from 'classnames'
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useSwipeable } from 'react-swipeable'
 import { getItems, getCategories, categoryIds } from '../utils'
 import { useSimulator } from '../store'
 import { Item } from '../types'
@@ -67,7 +68,7 @@ function Category() {
       </button>
     </li>
   ))
-  
+
   return(
     <nav className="fixed bottom-2 left-1/2 z-10 md:pb-10 mt-7 translate-x-[-50%] max-w-full md:max-w-[90%]">
       <ul className={classNames(
@@ -104,13 +105,13 @@ function ActionButtons() {
   return (
     <>
       <button 
-        className="absolute left-[calc(50%+5px)] bottom-14 md:top-8 md:left-full md:ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" 
+        className="absolute left-[calc(50%+5px)] bottom-14 md:top-1 md:left-full md:ml-5 w-10 h-10 p-2 rounded-full bg-zinc-700" 
         onClick={() => resetActiveItems()}
       >
         <img src={resetIcon} alt="reset" />
       </button>
       <button
-        className="absolute right-[calc(50%+5px)] bottom-14 md:top-8 md:right-full md:mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
+        className="absolute right-[calc(50%+5px)] bottom-14 md:top-1 md:right-full md:mr-5 w-10 h-10 p-2 rounded-full bg-zinc-700"
         onMouseEnter={() => setActive(true)}
         onMouseLeave={() => setActive(false)}
       >
@@ -173,7 +174,7 @@ function Parts() {
         <motion.li
           key={`${item.type}-${item.id}`}
           className={classNames(
-            'flex flex-col shrink-0 relative py-2 rounded-lg text-center cursor-pointer w-[110px] md:w-[165px] transition-colors',
+            'flex flex-col shrink-0 relative py-2 rounded-lg text-center cursor-pointer w-[110px] md:w-[165px] transition-colors select-none',
             { 'bg-blue-600 text-white': isSelected }
           )}
           onClick={() => handleItemSelect(item)}
@@ -201,7 +202,20 @@ function Parts() {
     })
 
   const isPrevActive = page > 1
-  const isNextActive = page < (items?.length ?? 0) / pageSize
+  const isNextActive = page < (items?.length ?? 0) / pageSize  
+  
+  function prevPage() {
+    if(isPrevActive) setPage(page - 1)
+  }
+  function nextPage() {
+    if(isNextActive) setPage(page + 1)
+  }
+
+  const swipeHandler = useSwipeable({
+    onSwipedLeft: nextPage,
+    onSwipedRight: prevPage,
+    trackMouse: true
+  });  
 
   return ( 
     <AnimatePresence>
@@ -227,12 +241,15 @@ function Parts() {
             className="absolute left-0 top-[calc(100%-3px)] z-10 px-[20px] text-5xl text-zinc-400 font-light disabled:invisible
               md:relative md:text-7xl"
             disabled={!isPrevActive}
-            onClick={() => { if(isPrevActive) setPage(page - 1)}}
+            onClick={() => prevPage()}
           >
             &lsaquo;
           </button>
           
-          <ul className="flex gap-2 grow justify-center flex-wrap md:flex-nowrap w-5/6 max-w-[1200px]">
+          <ul 
+            className="flex gap-2 grow justify-center flex-wrap md:flex-nowrap w-5/6 max-w-[1200px]"
+            {...swipeHandler}
+          >
             {renderedItems.length > 0 ? renderedItems : activeItems.case 
             ? (
               <motion.li
@@ -259,7 +276,7 @@ function Parts() {
             className="absolute right-0 top-[calc(100%-3px)] px-[20px] text-5xl text-zinc-400 font-light disabled:invisible
               md:relative md:text-7xl"
             disabled={!isNextActive}
-            onClick={() => { if(isNextActive) setPage(page + 1) }}
+            onClick={() => nextPage()}
           >
             &rsaquo;
           </button>

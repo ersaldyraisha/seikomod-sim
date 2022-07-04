@@ -11,6 +11,7 @@ specifiers:
   react: ^18.0.0
   react-dom: ^18.0.0
   react-query: ^3.39.1
+  react-swipeable: ^7.0.0
   tailwindcss: ^3.1.4
   typescript: ^4.6.3
   vite: ^2.9.9
@@ -22,6 +23,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-query: 3.39.1_biqbaboplfbrettd7655fr4n2y
+  react-swipeable: 7.0.0_react@18.2.0
   zustand: 4.0.0-rc.1_react@18.2.0
 
 devDependencies:
@@ -1276,6 +1278,14 @@ packages:
     resolution: {integrity: sha512-XP8A9BT0CpRBD+NYLLeIhld/RqG9+gktUjW1FkE+Vm7OCinbG1SshcK5tb9ls4kzvjZr9mOQc7HYgBngEyPAXg==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /react-swipeable/7.0.0_react@18.2.0:
+    resolution: {integrity: sha512-NI7KGfQ6gwNFN0Hor3vytYW3iRfMMaivGEuxcADOOfBCx/kqwXE8IfHFxEcxSUkxCYf38COLKYd9EMYZghqaUA==}
+    peerDependencies:
+      react: ^16.8.3 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
