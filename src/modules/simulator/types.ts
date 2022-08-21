@@ -8,6 +8,7 @@ export type Item = {
   compatibility: Array<string>
   type: CategoryId
   dialDiameter?: number
+  crownPosition?: 3 | 4
 }
 
 export type Items = {

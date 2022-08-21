@@ -7,10 +7,10 @@ export function getCategories() {
     { id: 'case', name: 'Case' },
     { id: 'dial', name: 'Dial' },
     { id: 'hands', name: 'Hands' },
-    { id: 'bezel', name: 'Bezel' },
+    // { id: 'bezel', name: 'Bezel' },
     { id: 'insert', name: 'Bezel Insert' },
     { id: 'chapter', name: 'Chapter Ring' },
-    { id: 'strap', name: 'Strap' }
+    // { id: 'strap', name: 'Strap' }
   ] as Array<{
     id: CategoryId,
     name: string
@@ -26,7 +26,8 @@ const items : Items = {
       description: 'Model - SKX',
       compatibility: ['7s26-002r'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4,
     },
     {
       id: '4r36-07e4',
@@ -35,7 +36,8 @@ const items : Items = {
       description: 'Model - SRPD',
       compatibility: ['4r36-07e4'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4,
     },
     {
       id: '4r36-07e4-b',
@@ -44,7 +46,8 @@ const items : Items = {
       description: 'Model - SRPD',
       compatibility: ['4r36-07e4'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4,
     },
     {
       id: '4r36-04y0',
@@ -53,7 +56,8 @@ const items : Items = {
       description: 'Model - SRP Turtle',
       compatibility: ['4r36-04y0'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4,
     },
     {
       id: '4r36-07w4',
@@ -62,7 +66,8 @@ const items : Items = {
       description: 'Model - SRPE5X',
       compatibility: ['4r36-07w4'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4,
     },
     {
       id: '4r36-07w4-b',
@@ -71,7 +76,8 @@ const items : Items = {
       description: 'Model - SRPE69',
       compatibility: ['4r36-07w4'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4,
     },
     {
       id: '7s26-02j0',
@@ -80,7 +86,8 @@ const items : Items = {
       description: 'Model - SNK78x/80x',
       compatibility: ['7s26-02j0'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4,
     },
     {
       id: '4r36-01e0',
@@ -89,7 +96,8 @@ const items : Items = {
       description: 'Model - SRP2xx/30x',
       compatibility: ['4r36-01e0'],
       type: 'case',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 3,
     },
   ],
   dial: [
@@ -100,7 +108,8 @@ const items : Items = {
       description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4
     },
     {
       id: 'srpe55',
@@ -109,7 +118,8 @@ const items : Items = {
       description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4
     },
     {
       id: 'srpe69',
@@ -118,7 +128,38 @@ const items : Items = {
       description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4
+    },
+    {
+      id: 'sary57',
+      name: 'SARY57',
+      src: 'https://seikonator.web.app/assets/dials/sary57.png',
+      description: '⌀ 28.5mm',
+      compatibility: [],
+      type: 'dial',
+      dialDiameter: 28.5,
+      crownPosition: 3
+    },
+    {
+      id: 'sarx57',
+      name: 'SARX57',
+      src: 'https://seikonator.web.app/assets/dials/sarx57.png',
+      description: '⌀ 28.5mm',
+      compatibility: [],
+      type: 'dial',
+      dialDiameter: 28.5,
+      crownPosition: 3
+    },
+    {
+      id: 'snzg15',
+      name: 'SNZG15',
+      src: 'https://seikonator.web.app/assets/dials/snzg15.png',
+      description: '⌀ 28.5mm',
+      compatibility: [],
+      type: 'dial',
+      dialDiameter: 28.5,
+      crownPosition: 3
     },
     {
       id: 'srpd55',
@@ -127,7 +168,8 @@ const items : Items = {
       description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4
     },
     {
       id: 'srpd79',
@@ -136,7 +178,8 @@ const items : Items = {
       description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4
     },
     {
       id: 'srp777',
@@ -145,7 +188,8 @@ const items : Items = {
       description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4
     },
     {
       id: 'snk809',
@@ -154,7 +198,8 @@ const items : Items = {
       description: '⌀ 28.5mm',
       compatibility: [],
       type: 'dial',
-      dialDiameter: 28.5
+      dialDiameter: 28.5,
+      crownPosition: 4
     }
   ],
   hands: [
@@ -198,6 +243,24 @@ const items : Items = {
       id: 'snk809',
       name: 'SNK809',
       src: 'https://seikonator.web.app/assets/hands/snk809.png',
+      description: 'Suitable dial - 28.5mm',
+      compatibility: [],
+      type: 'hands',
+      dialDiameter: 28.5
+    },
+    {
+      id: 'snzg15',
+      name: 'SNZG15',
+      src: 'https://seikonator.web.app/assets/hands/snzg15.png',
+      description: 'Suitable dial - 28.5mm',
+      compatibility: [],
+      type: 'hands',
+      dialDiameter: 28.5
+    },
+    {
+      id: 'sary57',
+      name: 'SARY57',
+      src: 'https://seikonator.web.app/assets/hands/sary57.png',
       description: 'Suitable dial - 28.5mm',
       compatibility: [],
       type: 'hands',
